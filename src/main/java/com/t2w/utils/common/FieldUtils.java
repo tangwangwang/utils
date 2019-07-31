@@ -23,8 +23,8 @@ public class FieldUtils {
     /**
      * @param clazz 需要获取属性的Class对象
      * @return java.util.Set<java.lang.String> 所有的字段的集合(不包含父类属性 ， 不包括 final 修饰的属性)
-     * @see
      * @date 2019-07-29 10:06
+     * @see
      */
     public static <T> Set<String> stringFields(Class<T> clazz) {
         return stringFields(clazz, false, false, true, true, true, true, true, true);
@@ -33,8 +33,8 @@ public class FieldUtils {
     /**
      * @param clazz 需要获取属性的Class对象
      * @return java.util.Set<java.lang.String> 所有的字段的集合(包含父类属性 ， 不包括 final 修饰的属性)
-     * @see
      * @date 2019-07-29 10:06
+     * @see
      */
     public static Set<String> stringAllFields(Class<?> clazz) {
         return stringFields(clazz, true, false, true, true, true, true, true, true);
@@ -51,8 +51,8 @@ public class FieldUtils {
      * @param containsTransient
      * @param containsVolatile
      * @return java.util.Set<java.lang.String>
-     * @see
      * @date 2019-07-29 10:07
+     * @see
      */
     public static Set<String> stringFields(Class<?> clazz, boolean containsFather, boolean containsFinal
             , boolean containsPrivate, boolean containsProtected, boolean containsPublic
@@ -94,8 +94,8 @@ public class FieldUtils {
     /**
      * @param clazz
      * @return java.util.Set<java.lang.reflect.Field>
-     * @see
      * @date 2019-07-29 10:07
+     * @see
      */
     public static <T> Set<Field> getFields(Class<T> clazz) {
         return getFields(clazz, false, false, true, true, true, true, true, true);
@@ -104,8 +104,8 @@ public class FieldUtils {
     /**
      * @param clazz 需要获取属性的Class对象
      * @return java.util.Set<java.lang.reflect.Field> 所有的字段的集合(包含父类属性 ， 不包括 final 修饰的属性)
-     * @see
      * @date 2019-07-29 10:09
+     * @see
      */
     public static Set<Field> getAllFields(Class<?> clazz) {
         return getFields(clazz, true, false, true, true, true, true, true, true);
@@ -122,8 +122,8 @@ public class FieldUtils {
      * @param containsTransient
      * @param containsVolatile
      * @return java.util.Set<java.lang.reflect.Field>
-     * @see
      * @date 2019-07-29 10:09
+     * @see
      */
     public static Set<Field> getFields(Class<?> clazz, boolean containsFather, boolean containsFinal
             , boolean containsPrivate, boolean containsProtected, boolean containsPublic
@@ -166,8 +166,8 @@ public class FieldUtils {
      * @param clazz
      * @param fieldName
      * @return java.lang.Class<S>
-     * @see
      * @date 2019-07-29 10:09
+     * @see
      */
     public static <S> Class<S> getFieldClass(Class clazz, String fieldName) {
         Set<Field> fields = getFields(clazz, true, true, true, true, true, true, true, true);
@@ -182,8 +182,8 @@ public class FieldUtils {
      * @param clazz 对象的Class
      * @param field 属性名
      * @return S 属性的值
-     * @see 通过属性的get方法获取属性的值
      * @date 2019-07-29 10:09
+     * @see 通过属性的get方法获取属性的值
      */
     public static <T, S> S getProperty(Class<T> clazz, String field) {
         String prefix = "get";
@@ -204,20 +204,25 @@ public class FieldUtils {
     }
 
     /**
-     * @param t 需要赋值的对象
+     * @param t     需要赋值的对象
      * @param field 需要设置值的属性
      * @param value 需要设置属性的值
-     * @see 通过属性的set方法设置属性的值
      * @date 2019-07-29 10:10
+     * @see 通过属性的set方法设置属性的值
      */
     public static <T> void setProperty(T t, String field, Object value) {
         String prefix = "set";
         Class fieldType = getFieldClass(t.getClass(), field);
         String methodName = prefix + StringUtils.capitalized(field);
         try {
-            Method method = t.getClass().getDeclaredMethod(methodName, fieldType);
-            method.invoke(t, castType(fieldType, value));
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            Set<Method> methods = MethodUtils.getAllMethods(t.getClass());
+            for (Method method : methods) {
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (method.getName().equals(methodName) && parameterTypes.length == 1 && parameterTypes[0].getName().equals(fieldType.getName())) {
+                    method.invoke(t, castType(fieldType, value));
+                }
+            }
+        } catch (InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
@@ -226,8 +231,8 @@ public class FieldUtils {
      * @param clazz class类型
      * @param value 值
      * @return java.lang.Object 转化后的对象
-     * @see 通过class类型获取获取对应类型的值
      * @date 2019-07-29 10:11
+     * @see 通过class类型获取获取对应类型的值
      */
     private static <T> Object castType(Class<T> clazz, Object value) {
         if (clazz == byte.class || clazz == Byte.class || value instanceof Byte) {

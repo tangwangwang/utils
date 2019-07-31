@@ -51,12 +51,12 @@ public class StringUtils {
 
     /**
      * @param src        源字符串
-     * @param smallCamel 大小驼峰,是否为小驼峰(驼峰，第一个字符是大写还是小写)
+     * @param greatCamel 大小驼峰,是否为小驼峰(驼峰，第一个字符是大写还是小写)
      * @return java.lang.String 转换后的字符串
      * @date 2019-07-29 10:14
      * @see 下划线转驼峰法(默认小驼峰)
      */
-    public static String underline2Camel(String src, boolean... smallCamel) {
+    public static String underline2Camel(String src, boolean... greatCamel) {
         if (isEmpty(src)) {
             return "";
         }
@@ -66,8 +66,8 @@ public class StringUtils {
         //匹配正则表达式
         while (matcher.find()) {
             String word = matcher.group();
-            //当是true 或则是空的情况
-            if ((smallCamel.length == 0 || smallCamel[0]) && matcher.start() == 0) {
+            //当 greatCamel 是 空 或 是 false 时，则为小驼峰
+            if ((greatCamel.length == 0 || !greatCamel[0]) && matcher.start() == 0) {
                 sb.append(Character.toLowerCase(word.charAt(0)));
             } else {
                 sb.append(Character.toUpperCase(word.charAt(0)));
