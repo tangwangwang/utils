@@ -1,9 +1,7 @@
 package com.t2w.utils.redis.domain;
 
-import com.t2w.utils.configuration.ConfigurationFile;
 import lombok.Data;
 import redis.clients.jedis.HostAndPort;
-import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.HashSet;
 import java.util.Properties;

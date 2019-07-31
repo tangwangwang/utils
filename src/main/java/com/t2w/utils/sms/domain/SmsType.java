@@ -14,12 +14,13 @@ import lombok.Getter;
 public enum SmsType {
     TENCENT("腾讯云"),
     ALIBABA("阿里云");
+
     private String name;
 
     SmsType() {
     }
 
-    private SmsType(String name) {
+    SmsType(String name) {
         this.name = name;
     }
 }

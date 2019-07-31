@@ -1,6 +1,5 @@
 package com.t2w.utils.sms.domain;
 
-import com.t2w.utils.common.StringUtils;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

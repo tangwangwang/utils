@@ -1,8 +1,6 @@
 package com.t2w.utils.database.domain;
 
-import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author T2W

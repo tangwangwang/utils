@@ -1,7 +1,5 @@
 package com.t2w.utils.common.domain;
 
-import lombok.Data;
-
 /**
  * @author T2W
  * @version V1.0.0

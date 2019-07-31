@@ -2,17 +2,13 @@ package com.t2w.utils.redis;
 
 import com.t2w.utils.common.FieldUtils;
 import com.t2w.utils.common.StringUtils;
-import com.t2w.utils.configuration.ConfigurationFile;
 import com.t2w.utils.exception.RedisConfigurationException;
 import com.t2w.utils.exception.RedisUninitializedException;
 import com.t2w.utils.redis.domain.RedisConfiguration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.exceptions.JedisException;
 
-import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 
 /**
