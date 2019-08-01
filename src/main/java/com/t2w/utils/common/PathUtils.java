@@ -1,8 +1,8 @@
 package com.t2w.utils.common;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * @author T2W
@@ -13,12 +13,11 @@ import java.io.File;
  * @see describing 获取项目在服务器中的真实路径的工具类
  * 这是在 web 项目中，获取项目实际路径的最佳方式，在 windows 和 linux 系统下均可正常使用
  */
-@Slf4j
 public class PathUtils {
 
-    /** 获取WEB项目的ClassPath路径 */
+    /** 获取 WEB 项目的 ClassPath 路径 */
     private static final String classPath;
-
+    /** 获取 WEB 项目的根路径 */
     private static final String rootPath;
 
     static {
@@ -26,15 +25,22 @@ public class PathUtils {
         try {
             // 启动 Web 项目时使用该路径
             path = PathUtils.class.getClassLoader().getResource("/").getPath();
+
         } catch (Exception e) {
             // 未启动 Web 项目时使用该路径
             path = PathUtils.class.getResource("/").getFile();
         }
+        try {
+            path = URLDecoder.decode(path, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+        }
         classPath = path;
-        rootPath = classPath.replace("WEB-INF/classes/", "").substring(0, classPath.indexOf("target/"));
+        path = path.replace("WEB-INF/classes/", "");
+        if (path.contains("target/")) {
+            path = path.substring(0, path.indexOf("target/"));
+        }
+        rootPath = path;
     }
-
-    //对项目的根路径进行解析，拿到项目路径
 
     /**
      * @return java.lang.String 真实路径
@@ -52,16 +58,7 @@ public class PathUtils {
      * @see describing 获取相对于工程路径的路径
      */
     public static String getRootPath(String relativePath) {
-        if (relativePath.length() > 0) {
-            char begin = relativePath.charAt(0);
-            char end = relativePath.charAt(relativePath.length() - 1);
-            if (begin == '/' || begin == '\\') {
-                relativePath = relativePath.substring(1);
-            }
-            if (relativePath.length() > 0 && end != '/' && end != '\\') {
-                relativePath += '/';
-            }
-        }
+        relativePath = handleRelativePath(relativePath);
         return handleOS(rootPath + relativePath);
     }
 
@@ -81,16 +78,7 @@ public class PathUtils {
      * @see describing 获取相对于类路径的路径
      */
     public static String getClassPath(String relativePath) {
-        if (relativePath.length() > 0) {
-            char begin = relativePath.charAt(0);
-            char end = relativePath.charAt(relativePath.length() - 1);
-            if (begin == '/' || begin == '\\') {
-                relativePath = relativePath.substring(1);
-            }
-            if (relativePath.length() > 0 && end != '/' && end != '\\') {
-                relativePath += '/';
-            }
-        }
+        relativePath = handleRelativePath(relativePath);
         return handleOS(classPath + relativePath);
     }
 
@@ -104,19 +92,37 @@ public class PathUtils {
         switch (File.separator) {
             // Windows 下
             case "\\":
-                log.info("windows");
-                if (path.charAt(0) == '/') {
+                if (path.length() > 0 && (path.charAt(0) == '/' || path.charAt(0) == '\\')) {
                     path = path.substring(1);
                 }
                 path = path.replace("/", "\\");
                 break;
             // Linux 下
             case "/":
-                log.info("linux");
                 path = path.replace("\\", "/");
                 break;
         }
         return path;
+    }
+
+    /**
+     * @param relativePath 相对路径
+     * @return java.lang.String 处理好的相对路径
+     * @date 2019-07-31 15:21
+     * @see describing 将相对路径处理为正确格式，例如 /abc --> abc/
+     */
+    private static String handleRelativePath(String relativePath) {
+        if (relativePath.length() > 0) {
+            char begin = relativePath.charAt(0);
+            char end = relativePath.charAt(relativePath.length() - 1);
+            if (begin == '/' || begin == '\\') {
+                relativePath = relativePath.substring(1);
+            }
+            if (relativePath.length() > 0 && end != '/' && end != '\\') {
+                relativePath += '/';
+            }
+        }
+        return relativePath;
     }
 
 }

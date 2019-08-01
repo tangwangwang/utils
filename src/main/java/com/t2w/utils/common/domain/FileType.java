@@ -9,11 +9,9 @@ package com.t2w.utils.common.domain;
  * @see
  */
 public enum FileType {
-
     IMAGE,
     VIDEO,
     AUDIO,
     DOCUMENT,
     FILE
-
 }

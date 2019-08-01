@@ -21,11 +21,11 @@ public enum DatabaseType {
     DB2("DB2"),
     ELASTICSEARCH("Elasticsearch"),
     MONGO_DB("MongoDB"),
-    REDIS("redis"),
+    REDIS("Redis"),
     ;
     private String name;
 
-    private DatabaseType(String name) {
+    DatabaseType(String name) {
         this.name = name;
     }
 }

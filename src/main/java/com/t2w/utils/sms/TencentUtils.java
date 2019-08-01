@@ -8,7 +8,7 @@ import com.github.qcloudsms.httpclient.HTTPException;
 import com.t2w.utils.common.StringUtils;
 import com.t2w.utils.exception.SmsException;
 import com.t2w.utils.sms.domain.SmsResult;
-import com.t2w.utils.sms.domain.SmsTencentConfiguration;
+import com.t2w.utils.sms.configuration.SmsTencentConfiguration;
 import com.t2w.utils.sms.domain.SmsType;
 import org.json.JSONException;
 

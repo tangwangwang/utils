@@ -4,7 +4,7 @@ import com.t2w.utils.common.FieldUtils;
 import com.t2w.utils.common.StringUtils;
 import com.t2w.utils.exception.RedisConfigurationException;
 import com.t2w.utils.exception.RedisUninitializedException;
-import com.t2w.utils.redis.domain.RedisConfiguration;
+import com.t2w.utils.redis.configuration.RedisConfiguration;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -54,7 +54,7 @@ public class RedisUtils {
                 if (jedisPoolConfig == null) {
                     jedisPoolConfig = new JedisPoolConfig();
                     Set<String> keys = configuration.getKeys();
-                    Set<String> fields = FieldUtils.stringAllFields(JedisPoolConfig.class);
+                    Set<String> fields = FieldUtils.getFieldNames(JedisPoolConfig.class);
                     for (String key : keys) {
                         for (String field : fields) {
                             String keyField = key.replaceAll("-", "").replaceAll("_", "");

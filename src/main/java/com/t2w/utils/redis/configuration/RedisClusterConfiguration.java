@@ -1,4 +1,4 @@
-package com.t2w.utils.redis.domain;
+package com.t2w.utils.redis.configuration;
 
 import lombok.Data;
 import redis.clients.jedis.HostAndPort;

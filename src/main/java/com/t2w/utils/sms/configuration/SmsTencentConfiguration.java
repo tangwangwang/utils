@@ -1,4 +1,4 @@
-package com.t2w.utils.sms.domain;
+package com.t2w.utils.sms.configuration;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -8,7 +8,7 @@ import lombok.experimental.Accessors;
  * @version V1.0.0
  * @email tang.wangwang@qq.com
  * @date 2019-07-29 17:17
- * @name com.t2w.utils.sms.domain.SmsTencentConfiguration.java
+ * @name com.t2w.utils.sms.configuration.SmsTencentConfiguration.java
  * @see 腾讯云短信配置信息类（配置使用短信业务的基础参数信息）
  */
 @Data
