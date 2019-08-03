@@ -1,6 +1,7 @@
 package com.t2w.utils.common;
 
 import com.t2w.utils.common.domain.FieldScope;
+import com.t2w.utils.common.domain.MethodScope;
 import com.t2w.utils.exception.FieldNotFoundException;
 import com.t2w.utils.exception.MethodNotFoundException;
 
@@ -18,13 +19,13 @@ import java.util.Set;
  * @email tang.wangwang@qq.com
  * @date 2019-07-29 09:40
  * @name com.t2w.utils.common.FieldUtils.java
- * @see describing 字段工具类
+ * @see describing 类字段工具类
  */
 public class FieldUtils {
 
     /**
-     * @param clazz 需要获取属性的 Class 对象
-     * @return java.util.Set<java.lang.reflect.Field> 该对象含有的 Filed 的集合
+     * @param clazz 需要获取属性名的 Class 对象
+     * @return java.util.Set<java.lang.String> 该对象含有的 Filed 的名字的集合
      * @date 2019-07-31 20:55
      * @see describing 获取该 Class 对象中所有以 public protected private 修饰的字段的名字集合
      */
@@ -33,8 +34,8 @@ public class FieldUtils {
     }
 
     /**
-     * @param clazz 需要获取属性的 Class 对象
-     * @return java.util.Set<java.lang.reflect.Field> 该对象含有的 Filed 的集合
+     * @param clazz 需要获取属性名的 Class 对象
+     * @return java.util.Set<java.lang.String> 该对象含有的 Filed  的名字的集合
      * @date 2019-07-31 21:00
      * @see describing 获取该 Class 对象以及其父类中所有以 public protected private 修饰的字段的名字集合
      */
@@ -43,9 +44,9 @@ public class FieldUtils {
     }
 
     /**
-     * @param clazz       需要获取属性的 Class 对象
+     * @param clazz       需要获取属性名的 Class 对象
      * @param fieldScopes 字段的修饰限定符的集合（需要查询的字段的修饰限定符）
-     * @return java.util.Set<java.lang.reflect.Field> 该对象含有的 Filed 的集合
+     * @return java.util.Set<java.lang.String> 该对象含有的 Filed  的名字的集合
      * @date 2019-07-31 21:02
      * @see describing 获取该 Class 对象中含有指定（fieldScopes 中所包含的）修饰限定符的字段名字集合
      */
@@ -199,7 +200,7 @@ public class FieldUtils {
         Class fieldType = getFieldClass(t.getClass(), fieldName);
         String methodName = prefix + StringUtils.capitalized(fieldName);
         try {
-            Set<Method> methods = MethodUtils.getAllMethods(t.getClass());
+            Set<Method> methods = MethodUtils.getMethods(t.getClass(), MethodScope.ALL_METHOD_SCOPE);
             for (Method method : methods) {
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 if (method.getName().equals(methodName) && parameterTypes.length == 1 && parameterTypes[0].getName().equals(fieldType.getName())) {

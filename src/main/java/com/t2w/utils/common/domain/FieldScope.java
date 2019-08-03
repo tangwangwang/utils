@@ -30,6 +30,7 @@ public enum FieldScope {
     VOLATILE,
     /** 表示父类的 Field 对象 */
     FATHER;
+
     /** 包含 PRIVATE 范围 */
     public final static Set<FieldScope> PRIVATE_FIELD_SCOPE;
     /** 包含 PROTECTED 范围 */
@@ -46,6 +47,12 @@ public enum FieldScope {
     public final static Set<FieldScope> TRANSIENT_FIELD_SCOPE;
     /** 包含 PRIVATE, PROTECTED, PUBLIC, VOLATILE 范围 */
     public final static Set<FieldScope> VOLATILE_FIELD_SCOPE;
+    /** 包含 PRIVATE, FATHER 范围 */
+    public final static Set<FieldScope> FATHER_PRIVATE_FIELD_SCOPE;
+    /** 包含 PROTECTED, FATHER 范围 */
+    public final static Set<FieldScope> FATHER_PROTECTED_FIELD_SCOPE;
+    /** 包含 PUBLIC, FATHER 范围 */
+    public final static Set<FieldScope> FATHER_PUBLIC_FIELD_SCOPE;
     /** 包含 PRIVATE, PROTECTED, PUBLIC, FATHER 范围 */
     public final static Set<FieldScope> FATHER_DEFAULT_FIELD_SCOPE;
     /** 包含 PRIVATE, PROTECTED, PUBLIC, FATHER, FINAL 范围 */
@@ -68,6 +75,9 @@ public enum FieldScope {
         STATIC_FIELD_SCOPE = SetUtils.asSet(PRIVATE, PROTECTED, PUBLIC, STATIC);
         TRANSIENT_FIELD_SCOPE = SetUtils.asSet(PRIVATE, PROTECTED, PUBLIC, TRANSIENT);
         VOLATILE_FIELD_SCOPE = SetUtils.asSet(PRIVATE, PROTECTED, PUBLIC, VOLATILE);
+        FATHER_PRIVATE_FIELD_SCOPE = SetUtils.asSet(PRIVATE, FATHER);
+        FATHER_PROTECTED_FIELD_SCOPE = SetUtils.asSet(PROTECTED, FATHER);
+        FATHER_PUBLIC_FIELD_SCOPE = SetUtils.asSet(PUBLIC, FATHER);
         FATHER_DEFAULT_FIELD_SCOPE = SetUtils.asSet(PRIVATE, PROTECTED, PUBLIC, FATHER);
         FATHER_FINAL_FIELD_SCOPE = SetUtils.asSet(PRIVATE, PROTECTED, PUBLIC, FATHER, FINAL);
         FATHER_STATIC_FIELD_SCOPE = SetUtils.asSet(PRIVATE, PROTECTED, PUBLIC, FATHER, STATIC);
