@@ -17,7 +17,8 @@ import java.util.Set;
  * @email tang.wangwang@qq.com
  * @date 2019-07-29 10:48
  * @name com.t2w.utils.redis.RedisUtils.java
- * @see Redis工具类（使用该用户类最好在项目启动时配置Redis环境）
+ * @see Redis工具类（使用该用户类最好在项目启动时配置Redis环境） <br/>
+ * 需要导入依赖【redis.clients.jedis】
  */
 public class RedisUtils {
     /** Jedis 连接池配置类 */

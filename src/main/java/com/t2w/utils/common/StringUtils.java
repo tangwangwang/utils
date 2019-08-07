@@ -132,4 +132,60 @@ public class StringUtils {
         return pattern.matcher(src).matches();
     }
 
+    /**
+     * @param src       源字符串数组
+     * @param separator 各个字符串之间的分隔符
+     * @return java.lang.String 转化后的字符串
+     * @date 2019-08-07 11:20
+     * @see describing 将字符串数组按指定分隔符拼接为字符串
+     */
+    public static String toString(String[] src, String separator) {
+        StringBuffer buffer = new StringBuffer();
+        for (int index = 0; index < src.length; index++) {
+            buffer.append(src[index]);
+            if (isNotEmpty(separator) && index != src.length - 1) {
+                buffer.append(separator);
+            }
+        }
+        return buffer.toString();
+    }
+
+    /**
+     * @param src 源字符串数组
+     * @return java.lang.String 转化后的字符串
+     * @date 2019-08-07 11:21
+     * @see describing 将字符串数组拼接为字符串
+     */
+    public static String toString(String[] src) {
+        return toString(src, null);
+    }
+
+    /**
+     * @param src       源字符数组
+     * @param separator 各个字符之间的分隔符
+     * @return java.lang.String 转化后的字符串
+     * @date 2019-08-07 11:25
+     * @see describing 将字符串组按指定分隔符拼接为字符串
+     */
+    public static String toString(char[] src, String separator) {
+        StringBuffer buffer = new StringBuffer();
+        for (int index = 0; index < src.length; index++) {
+            buffer.append(src[index]);
+            if (isNotEmpty(separator) && index != src.length - 1) {
+                buffer.append(separator);
+            }
+        }
+        return buffer.toString();
+    }
+
+    /**
+     * @param src 源字符数组
+     * @return java.lang.String 转化后的字符串
+     * @date 2019-08-07 11:24
+     * @see describing 将字符串组拼接为字符串
+     */
+    public static String toString(char[] src) {
+        return toString(src, null);
+    }
+
 }

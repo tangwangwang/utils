@@ -20,7 +20,8 @@ import java.io.IOException;
  * @email tang.wangwang@qq.com
  * @date 2019-07-29 14:35
  * @name com.t2w.utils.sms.TencentUtils.java
- * @see 腾讯云短信服务工具包，需要在程序中配置 SmsTencentConfiguration，可直接在容器中加入一个该类型的 bean 进行使用
+ * @see 腾讯云短信服务工具包，需要在程序中配置 SmsTencentConfiguration，可直接在容器中加入一个该类型的 bean 进行使用 <br/>
+ * 需要导入依赖【com.github.qcloudsms.qcloudsms】
  */
 public class TencentUtils {
 

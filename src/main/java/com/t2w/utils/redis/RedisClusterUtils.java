@@ -16,7 +16,8 @@ import java.util.Set;
  * @email tang.wangwang@qq.com
  * @date 2019-07-29 10:49
  * @name com.t2w.utils.redis.RedisClusterUtils.java
- * @see Redis集群工具类（使用该用户类最好在项目启动时配置Redis环境）
+ * @see Redis集群工具类（使用该用户类最好在项目启动时配置Redis环境） <br/>
+ * 需要导入依赖【redis.clients.jedis】
  */
 public class RedisClusterUtils {
     /** Jedis 连接池配置类 */
