@@ -54,7 +54,6 @@ public class EncryptionUtils {
         return null;
     }
 
-
     /**
      * @param plaintext 待加密的文本（明文）
      * @param hmac      散列消息鉴别码类型（支持的算法：HmacMD5, HmacSHA1, HmacSHA256, HmacSHA384, HmacSHA512）
@@ -97,7 +96,7 @@ public class EncryptionUtils {
 
     /**
      * @param plaintext           待加密（解密）的文本（密明/文）
-     * @param secretKeyEncryption 对称密钥加密算法类型（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2）
+     * @param secretKeyEncryption 对称密钥加密算法类型（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2, RC4）
      * @param encode              加密状态标志（true: 加密 ; false: 解密）
      * @return java.lang.String   加密（解密）后的文本（密/明文）
      * @date 2019-08-08 20:52
@@ -109,7 +108,7 @@ public class EncryptionUtils {
 
     /**
      * @param plaintext           待加密（解密）的文本（密明/文）
-     * @param secretKeyEncryption 对称密钥加密算法类型（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2）
+     * @param secretKeyEncryption 对称密钥加密算法类型（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2, RC4）
      * @param key                 加密/解密的密钥
      * @param encode              加密状态标志（true: 加密 ; false: 解密）
      * @return java.lang.String   加密（解密）后的文本（密/明文）
@@ -122,20 +121,38 @@ public class EncryptionUtils {
 
     /**
      * @param plaintext           待加密（解密）的文本（密明/文）
-     * @param secretKeyEncryption 对称密钥加密算法类型（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2）
+     * @param secretKeyEncryption 对称密钥加密算法类型（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2, RC4）
      * @param size                加密/解密密钥长度
-     * @param encode              加密状态标志（true: 加密 ; false: 解密）
      * @return java.lang.String   加密（解密）后的文本（密/明文）
      * @date 2019-08-08 20:58
-     * @see describing 使用 Java 自带的 KeyGenerator 中的对称密钥加密算法进行密钥加密/解密（密钥长度加密）
+     * @see describing 使用 Java 自带的 KeyGenerator 中的对称密钥加密算法进行密钥加密/解密（密钥长度加密，使用系统随机数生成密钥，不可逆）
      */
-    public static String keyGeneratorSecretKeyEncryption(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, int size, boolean encode) {
-        return keyGeneratorSecretKeyEncryption(plaintext, secretKeyEncryption.getName(), null, size, encode);
+    public static String keyGeneratorSecretKeyEncryption(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, int size) {
+        switch (secretKeyEncryption) {
+            case AES:
+                if (size != 128 && size != 192 && size != 256)
+                    throw new EncryptionKeySizeException("size 必须是：128, 192, 256");
+            case DES:
+                if (size != 56)
+                    throw new EncryptionKeySizeException("size 必须是：56");
+            case RC2:
+            case RC4:
+            case ARCFOUR:
+                if (size < 40 || size > 1024)
+                    throw new EncryptionKeySizeException("size 必须在 40 - 1024 之间");
+            case DESEDE:
+                if (size != 112 && size != 168)
+                    throw new EncryptionKeySizeException("size 必须是：112, 168");
+            case BLOWFISH:
+                if (size < 32 || size > 448 || size % 8 != 0)
+                    throw new EncryptionKeySizeException("size 必须是 8 的倍数，并且只能在 32 到 448 之间（包括 32 和 448 ）");
+        }
+        return keyGeneratorSecretKeyEncryption(plaintext, secretKeyEncryption.getName(), null, size, true);
     }
 
     /**
      * @param plaintext           待加密（解密）的文本（密明/文）
-     * @param secretKeyEncryption 对称密钥加密算法类型（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2）
+     * @param secretKeyEncryption 对称密钥加密算法类型（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2, RC4）
      * @param key                 加密/解密的密钥（如果key为空则表示使用系统随机数初始化密钥，生成的密文不可解密）
      * @param size                加密/解密密钥长度
      * @param encode              加密状态标志（true: 加密 ; false: 解密）
@@ -149,7 +166,7 @@ public class EncryptionUtils {
 
     /**
      * @param text      待加密（解密）的文本（密明/文）
-     * @param algorithm 加密算法名称（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2）
+     * @param algorithm 加密算法名称（支持的算法：AES, ARCFOUR, Blowfish, DES, DESede, RC2, RC4）
      * @param key       加密的秘钥（如果key为空则表示使用系统随机数初始化密钥，生成的密文不可解密）
      * @param size      生成秘钥的大小
      * @param encode    加密状态标志（true: 加密 ; false: 解密）
@@ -276,7 +293,7 @@ public class EncryptionUtils {
     public static String AES(String plaintext, int size) throws EncryptionKeySizeException {
         // size 为 128, 192, 256
         if (size != 128 && size != 192 && size != 256)
-            throw new EncryptionKeySizeException("size只能为：128, 192, 256");
+            throw new EncryptionKeySizeException("size 必须是：128, 192, 256");
         return keyGeneratorSecretKeyEncryption(plaintext, EncryptionAlgorithm.SecretKeyEncryption.AES, null, size, true);
     }
 
