@@ -1,5 +1,7 @@
 package com.t2w.utils.common;
 
+import com.t2w.utils.common.domain.OS;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -89,16 +91,16 @@ public class PathUtils {
      * @see describing 根据操作系统处理路径的分割符
      */
     public static String handleOS(String path) {
-        switch (File.separator) {
+        switch (getOS()) {
             // Windows 下
-            case "\\":
+            case WINDOWS:
                 if (path.length() > 0 && (path.charAt(0) == '/' || path.charAt(0) == '\\')) {
                     path = path.substring(1);
                 }
                 path = path.replace("/", "\\");
                 break;
             // Linux 下
-            case "/":
+            case LINUX:
                 path = path.replace("\\", "/");
                 break;
         }
@@ -123,6 +125,19 @@ public class PathUtils {
             }
         }
         return relativePath;
+    }
+
+    public static OS getOS() {
+        switch (File.separator) {
+            // Windows 下
+            case "\\":
+                return OS.WINDOWS;
+            // Linux 下
+            case "/":
+                return OS.LINUX;
+            default:
+                return null;
+        }
     }
 
 }

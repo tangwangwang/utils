@@ -7,6 +7,7 @@
     <groupId>com.t2w</groupId>
     <artifactId>utils</artifactId>
     <version>1.0.0</version>
+    <packaging>jar</packaging>
 
     <name>utils</name>
     <!-- FIXME change it to the project's website -->
@@ -30,18 +31,21 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <version>1.7.26</version>
+            <optional>true</optional>
         </dependency>
         <!-- Redis 依赖 -->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>3.0.1</version>
+            <optional>true</optional>
         </dependency>
         <!-- Ymal 解析依赖 -->
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
             <version>1.24</version>
+            <optional>true</optional>
         </dependency>
         <!-- Lombok 插件 -->
         <dependency>
@@ -49,12 +53,14 @@
             <artifactId>lombok</artifactId>
             <version>1.18.8</version>
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <!-- 腾讯云短息业务依赖 -->
         <dependency>
             <groupId>com.github.qcloudsms</groupId>
             <artifactId>qcloudsms</artifactId>
             <version>1.0.6</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- POI依赖 -->
@@ -63,18 +69,21 @@
             <artifactId>poi</artifactId>
             <version>3.12</version>
             <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml-schemas</artifactId>
             <version>3.12</version>
             <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>3.12</version>
             <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.belerweb/pinyin4j -->
@@ -82,6 +91,7 @@
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
             <version>2.5.1</version>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>

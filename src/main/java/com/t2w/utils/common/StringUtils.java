@@ -1,5 +1,8 @@
 package com.t2w.utils.common;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -89,10 +92,7 @@ public class StringUtils {
      * @see 为 null 或 "" 字符串则返回 true ,否则返回 false
      */
     public static boolean isEmpty(String src) {
-        if (src == null || "".equals(src))
-            return true;
-        else
-            return false;
+        return src == null || "".equals(src);
     }
 
     /**
@@ -188,4 +188,41 @@ public class StringUtils {
         return toString(src, null);
     }
 
+    /**
+     * @param bytes 二进制 byte 数组
+     * @return java.lang.String 16进制形式的字符串
+     * @date 2019-08-08 20:32
+     * @see describing 将二进制转换成16进制
+     */
+    public static String toHexString(byte[] bytes) {
+        StringBuilder builder = new StringBuilder();
+        for (byte temp : bytes) {
+            String hex = Integer.toHexString(temp & 0xFF);
+            if (hex.length() == 1) {
+                hex = '0' + hex;
+            }
+            builder.append(hex.toUpperCase());
+        }
+        return builder.toString();
+    }
+
+    /**
+     * @param hexString 16进制形式的字符串
+     * @return byte[] 二进制 byte 数组
+     * @date 2019-08-08 20:41
+     * @see describing 将16进制转换为二进制（字符串长度必须为 2 的倍数）;
+     */
+    public static byte[] toBytes(String hexString) {
+        if (hexString.length() < 1)
+            return new byte[0];
+        if (hexString.length() % 2 == 1)
+            return new byte[0];
+        byte[] result = new byte[hexString.length() / 2];
+        for (int i = 0; i < hexString.length() / 2; i++) {
+            int high = Integer.parseInt(hexString.substring(i * 2, i * 2 + 1), 16);
+            int low = Integer.parseInt(hexString.substring(i * 2 + 1, i * 2 + 2), 16);
+            result[i] = (byte) (high * 16 + low);
+        }
+        return result;
+    }
 }
