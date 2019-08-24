@@ -1,6 +1,7 @@
 package com.t2w.utils.redis.configuration;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.HashSet;
 import java.util.Properties;
@@ -15,6 +16,7 @@ import java.util.Set;
  * @see Redis 配置信息类
  */
 @Data
+@Accessors(chain = true)
 public class RedisConfiguration {
 
     /** Redis 主机 */
@@ -50,15 +52,15 @@ public class RedisConfiguration {
     }
 
     /**
-     * @return java.util.Set<java.lang.String> properties 中所有的 key
+     * @return java.util.Set<java.lang.Object> properties 中所有的 key
      * @date 2019-07-30 16:08
      * @see describing 获取 properties 中所有的 key
      */
-    public Set<String> getKeys() {
+    public Set<Object> getKeys() {
         if (properties == null)
-            return new HashSet<String>();
+            return new HashSet<Object>();
         else
-            return properties.stringPropertyNames();
+            return properties.keySet();
     }
 
     /**

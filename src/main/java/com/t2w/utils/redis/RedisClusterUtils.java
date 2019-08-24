@@ -1,13 +1,15 @@
 package com.t2w.utils.redis;
 
 import com.t2w.utils.common.FieldUtils;
+import com.t2w.utils.common.MethodUtils;
 import com.t2w.utils.common.StringUtils;
 import com.t2w.utils.exception.RedisConfigurationException;
 import com.t2w.utils.exception.RedisUninitializedException;
 import com.t2w.utils.redis.configuration.RedisClusterConfiguration;
-import redis.clients.jedis.JedisCluster;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.*;
 
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -60,17 +62,19 @@ public class RedisClusterUtils {
                             String keyField = key.toString().replaceAll("-", "").replaceAll("_", "");
                             if (keyField.equalsIgnoreCase(field)) {
                                 Object value = configuration.get(key);
-                                FieldUtils.setProperty(jedisPoolConfig, field, value);
+                                MethodUtils.setProperty(jedisPoolConfig, field, value);
                             }
                         }
                     }
                 }
             }
         }
-        if (StringUtils.isEmpty(configuration.getPassword())) {
-            cluster = new JedisCluster(configuration.getNodes(), configuration.getConnectionTimeout(), configuration.getSoTimeout(), configuration.getMaxAttempts(), jedisPoolConfig);
-        } else {
-            cluster = new JedisCluster(configuration.getNodes(), configuration.getConnectionTimeout(), configuration.getSoTimeout(), configuration.getMaxAttempts(), configuration.getPassword(), configuration.getClientName(), jedisPoolConfig);
+        if (cluster == null || cluster.getClusterNodes().size() <= 0) {
+            if (StringUtils.isEmpty(configuration.getPassword())) {
+                cluster = new JedisCluster(configuration.getNodes(), configuration.getConnectionTimeout(), configuration.getSoTimeout(), configuration.getMaxAttempts(), jedisPoolConfig);
+            } else {
+                cluster = new JedisCluster(configuration.getNodes(), configuration.getConnectionTimeout(), configuration.getSoTimeout(), configuration.getMaxAttempts(), configuration.getPassword(), configuration.getClientName(), jedisPoolConfig);
+            }
         }
     }
 
@@ -82,7 +86,7 @@ public class RedisClusterUtils {
      */
     public static JedisCluster getJedisCluster(RedisClusterConfiguration... configurations) {
         if (configurations.length > 1)
-            throw new RedisConfigurationException("配置对象过多异常，配置对象最多传入一个，可不传。");
+            throw new RedisConfigurationException("配置对象过多异常，配置对象最多传入一个，已初始化后可不传。");
         if (configurations.length > 0 && configurations[0] != null)
             RedisClusterUtils.init(configurations[0]);
         else
@@ -97,6 +101,22 @@ public class RedisClusterUtils {
     public static void closeJedisCluster() {
         if (cluster != null)
             cluster.close();
+    }
+
+    /**
+     * @param pattern 正则匹配符
+     * @return java.util.Set<java.lang.String> 集群中所有的 key
+     * @see describing 获取 Redis 集群中所有节点的 key
+     * @date 2019-08-16 19:48
+     */
+    public static Set<String> keys(String pattern) {
+        Set<String> keys = new HashSet<String>();
+        Map<String, JedisPool> nodes = cluster.getClusterNodes();
+        for (JedisPool jedisPool : nodes.values()) {
+            Jedis jedis = jedisPool.getResource();
+            keys.addAll(jedis.keys(pattern));
+        }
+        return keys;
     }
 
 }

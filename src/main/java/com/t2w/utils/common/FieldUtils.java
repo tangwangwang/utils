@@ -148,133 +148,35 @@ public class FieldUtils {
     }
 
     /**
-     * @param clazz     需要获取属性的 Class 对象
-     * @param fieldName 属性名
+     * @param name  属性名
+     * @param clazz 需要获取属性的 Class 对象
      * @return java.lang.Class<S> 属性类型对应的 Class 对象
      * @date 2019-08-01 10:25
      * @see describing 获取属性的类型 Class 对象
      */
-    public static <S> Class<S> getFieldClass(Class clazz, String fieldName) {
+    public static <S> Class<S> getFieldType(String name, Class clazz) {
         Set<Field> fields = getFields(clazz, FieldScope.ALL_FIELD_SCOPE);
         for (Field field : fields) {
-            if (field.getName().equals(fieldName))
+            if (field.getName().equals(name))
                 return (Class<S>) field.getType();
         }
-        throw new FieldNotFoundException(clazz.getName() + " 未找到属性 " + fieldName);
+        throw new FieldNotFoundException(clazz.getName() + " 未找到属性 " + name);
     }
 
     /**
-     * @param clazz     需要获取属性值的 Class 对象
-     * @param fieldName 属性名
-     * @return S 属性的值
-     * @date 2019-08-01 10:27
-     * @see describing 通过属性的get方法获取属性的值
+     * @param name  属性名
+     * @param clazz 需要获取属性的 Class 对象
+     * @return java.lang.reflect.Field 属性对应的 Field 对象
+     * @date 2019-08-19 12:42
+     * @see describing 获取属性的 Field 对象
      */
-    public static <T, S> S getProperty(Class<T> clazz, String fieldName) {
-        String prefix = "get";
-        Method[] methods = clazz.getMethods();
-        Class<S> fieldType = FieldUtils.getFieldClass(clazz, fieldName);
-        if (fieldType == boolean.class)
-            prefix = "is";
-        try {
-            for (Method method : methods) {
-                if ((prefix + StringUtils.capitalized(fieldName)).equals(method.getName())) {
-                    return fieldType.cast(method.invoke(clazz.newInstance()));
-                }
-            }
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | IllegalArgumentException e) {
-            e.printStackTrace();
+    public static Field getField(String name, Class clazz) {
+        Set<Field> fields = getFields(clazz, FieldScope.ALL_FIELD_SCOPE);
+        for (Field field : fields) {
+            if (field.getName().equals(name))
+                return field;
         }
-        return null;
-    }
-
-    /**
-     * @param t         需要赋值的对象
-     * @param fieldName 需要设置值的属性名
-     * @param value     需要设置属性的值
-     * @date 2019-08-01 10:29
-     * @see describing 通过属性的set方法设置属性的值
-     */
-    public static <T> void setProperty(T t, String fieldName, Object value) {
-        String prefix = "set";
-        Class fieldType = getFieldClass(t.getClass(), fieldName);
-        String methodName = prefix + StringUtils.capitalized(fieldName);
-        try {
-            Set<Method> methods = MethodUtils.getMethods(t.getClass(), MethodScope.ALL_METHOD_SCOPE);
-            for (Method method : methods) {
-                Class<?>[] parameterTypes = method.getParameterTypes();
-                if (method.getName().equals(methodName) && parameterTypes.length == 1 && parameterTypes[0].getName().equals(fieldType.getName())) {
-                    method.invoke(t, castType(fieldType, value));
-                    return;
-                }
-            }
-            throw new MethodNotFoundException(t.getClass() + "未找到" + methodName + "方法异常");
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * @param clazz class类型
-     * @param value 值
-     * @return java.lang.Object 转化后的对象
-     * @date 2019-07-29 10:11
-     * @see describing 通过class类型获取获取对应类型的值
-     */
-    public static <T> Object castType(Class<T> clazz, Object value) {
-        if (clazz == byte.class || clazz == Byte.class || value instanceof Byte) {
-            if (null == value) {
-                return 0;
-            }
-            return Byte.valueOf(value.toString());
-        } else if (clazz == short.class || clazz == Short.class || value instanceof Short) {
-            if (null == value) {
-                return 0;
-            }
-            return Short.valueOf(value.toString());
-        } else if (clazz == int.class || clazz == Integer.class || value instanceof Integer) {
-            if (null == value) {
-                return 0;
-            }
-            return Integer.valueOf(value.toString());
-        } else if (clazz == long.class || clazz == Long.class || value instanceof Long) {
-            if (null == value) {
-                return 0;
-            }
-            return Long.valueOf(value.toString());
-        } else if (clazz == float.class || clazz == Float.class || value instanceof Float) {
-            if (null == value) {
-                return 0;
-            }
-            return Float.valueOf(value.toString());
-        } else if (clazz == double.class || clazz == Double.class || value instanceof Double) {
-            if (null == value) {
-                return 0;
-            }
-            return Double.valueOf(value.toString());
-        } else if (clazz == char.class || clazz == Character.class || value instanceof Character) {
-            if (null == value) {
-                return 0;
-            }
-            return value.toString().charAt(0);
-        } else if (clazz == boolean.class || clazz == Boolean.class || value instanceof Boolean) {
-            if (null == value) {
-                return false;
-            }
-            return Boolean.valueOf(value.toString());
-        } else if (clazz == String.class || value instanceof String) {
-            if (null == value) {
-                return null;
-            }
-            return value.toString();
-        } else if (clazz == BigDecimal.class || value instanceof BigDecimal) {
-            if (null == value) {
-                return null;
-            }
-            return new BigDecimal(value.toString());
-        } else {
-            return clazz.cast(value);
-        }
+        throw new FieldNotFoundException(clazz.getName() + " 未找到属性 " + name);
     }
 
 }

@@ -22,11 +22,29 @@ public class StringUtils {
      * @date 2019-07-29 10:12
      * @see 字符串首字母大写（name ---> Name）
      */
-    public static String capitalized(String src) {
+    public static String acronymUppercase(String src) {
         if (StringUtils.isEmpty(src))
             return "";
         byte[] items = src.getBytes();
-        items[0] = (byte) ((char) items[0] - 'a' + 'A');
+        if (items[0] >= 'a' && items[0] <= 'z') {
+            items[0] = (byte) ((char) items[0] - 'a' + 'A');
+        }
+        return new String(items);
+    }
+
+    /**
+     * @param src 需要转化的源字符串
+     * @return java.lang.String 转化完成后的字符串
+     * @date 2019-08-19 15:07
+     * @see describing 字符串首字母小写（Name ---> name）
+     */
+    public static String acronymLowercase(String src) {
+        if (StringUtils.isEmpty(src))
+            return "";
+        byte[] items = src.getBytes();
+        if (items[0] >= 'A' && items[0] <= 'Z') {
+            items[0] = (byte) ((char) items[0] - 'A' + 'a');
+        }
         return new String(items);
     }
 
@@ -165,7 +183,7 @@ public class StringUtils {
      * @param separator 各个字符之间的分隔符
      * @return java.lang.String 转化后的字符串
      * @date 2019-08-07 11:25
-     * @see describing 将字符串组按指定分隔符拼接为字符串
+     * @see describing 将字符数组按指定分隔符拼接为字符串
      */
     public static String toString(char[] src, String separator) {
         StringBuffer buffer = new StringBuffer();
@@ -182,7 +200,7 @@ public class StringUtils {
      * @param src 源字符数组
      * @return java.lang.String 转化后的字符串
      * @date 2019-08-07 11:24
-     * @see describing 将字符串组拼接为字符串
+     * @see describing 将字符数组拼接为字符串
      */
     public static String toString(char[] src) {
         return toString(src, null);

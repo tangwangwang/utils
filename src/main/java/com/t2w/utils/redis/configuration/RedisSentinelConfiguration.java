@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import redis.clients.jedis.HostAndPort;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Properties;
 import java.util.Set;
 
@@ -12,43 +13,34 @@ import java.util.Set;
  * @author T2W
  * @version V1.0.0
  * @email tang.wangwang@qq.com
- * @date 2019-07-30 10:47
- * @name com.t2w.utils.redis.domain.RedisClusterConfiguration.java
- * @see Redis集群配置类
+ * @date 2019-08-16 20:03
+ * @name com.t2w.utils.redis.configuration.RedisSentinelConfiguration.java
+ * @see describing Redis 主从复制模式配置类
  */
 @Data
 @Accessors(chain = true)
-public class RedisClusterConfiguration {
-    /** Redis 集群连接尝试次数 */
-    private int maxAttempts = 5;
-    /** Redis 连接超时次数 */
-    private int connectionTimeout = 2000;
-    /** Redis 读取数据超时时间 */
-    private int soTimeout;
-    /** Redis 集群连接密码 */
+public class RedisSentinelConfiguration {
+
+    /** Redis 主从的节点信息 */
+    private Set<HostAndPort> nodes;
+    /** Redis 连接超时 */
+    private int timeout = 2000;
+    /** Redis 密码 */
     private String password;
-    /** Redis 集群连接尝试次数 */
-    private String clientName;
+    /** Redis 是否开启ssl */
+    private boolean ssl;
     /** 其他配置属性 */
     private Properties properties;
-    /** Redis 集群的节点信息 */
-    private Set<HostAndPort> nodes;
 
     /**
-     * @param host Redis 集群节点主机地址
-     * @param port Redis 集群节点端口号
-     * @return com.t2w.utils.redis.domain.RedisClusterConfiguration Redis 集群配置对象
-     * @see describing 向 RedisCluster 配置类中加入集群节点
-     * @date 2019-07-30 16:42
+     * @param host Redis 节点主机地址
+     * @param port Redis 节点端口号
+     * @return com.t2w.utils.redis.configuration.RedisSentinelConfiguration 主从复制模式配置对象
+     * @date 2019-08-16 20:07
+     * @see describing 向 Redis Sentinel 配置类中加入节点
      */
-    public RedisClusterConfiguration addNode(String host, int port) {
-        if (nodes == null) {
-            synchronized (RedisClusterConfiguration.class) {
-                if (nodes == null)
-                    nodes = new HashSet<HostAndPort>();
-            }
-        }
-        nodes.add(new HostAndPort(host, port));
+    public RedisSentinelConfiguration addNode(String host, int port) {
+        getNodes().add(new HostAndPort(host, port));
         return this;
     }
 
@@ -56,7 +48,7 @@ public class RedisClusterConfiguration {
      * @param key   需要放入 properties 中的 key
      * @param value 需要放入 properties 中的 value
      * @return java.util.Properties properties 对象
-     * @date 2019-07-30 16:09
+     * @date 2019-08-16 20:09
      * @see describing 向 properties 中加入属性值
      */
     public Properties put(Object key, Object value) {
@@ -72,8 +64,8 @@ public class RedisClusterConfiguration {
     }
 
     /**
-     * @return java.util.Set<java.lang.String> properties 中所有的 key
-     * @date 2019-07-30 16:08
+     * @return java.util.Set<java.lang.Object> properties 中所有的 key
+     * @date 2019-08-16 20:09
      * @see describing 获取 properties 中所有的 key
      */
     public Set<Object> getKeys() {
@@ -86,7 +78,7 @@ public class RedisClusterConfiguration {
     /**
      * @param key properties 中的某个 key
      * @return java.lang.Object key 对应的 value 值
-     * @date 2019-07-30 16:03
+     * @date 2019-08-16 20:09
      * @see describing 获取 properties 中 key 对应的 value 值，key 不存在返回空
      */
     public Object get(Object key) {
@@ -95,4 +87,18 @@ public class RedisClusterConfiguration {
         return null;
     }
 
+    /**
+     * @return java.util.Set<redis.clients.jedis.HostAndPort> 所有的节点信息集合
+     * @see describing 获取所有的节点信息
+     * @date 2019-08-16 20:28
+     */
+    public Set<HostAndPort> getNodes() {
+        if (nodes == null) {
+            synchronized (RedisClusterConfiguration.class) {
+                if (nodes == null)
+                    nodes = new LinkedHashSet<HostAndPort>(0);
+            }
+        }
+        return nodes;
+    }
 }

@@ -1,6 +1,7 @@
 package com.t2w.utils.redis;
 
 import com.t2w.utils.common.FieldUtils;
+import com.t2w.utils.common.MethodUtils;
 import com.t2w.utils.common.StringUtils;
 import com.t2w.utils.exception.RedisConfigurationException;
 import com.t2w.utils.exception.RedisUninitializedException;
@@ -25,7 +26,7 @@ public class RedisUtils {
     private static JedisPoolConfig jedisPoolConfig;
     /** Jedis 连接池 */
     private static JedisPool jedisPool;
-    /** Redis 配置类 */
+    /** Redis 配置对象 */
     private static RedisConfiguration configuration;
 
     /**
@@ -54,14 +55,14 @@ public class RedisUtils {
             synchronized (RedisUtils.class) {
                 if (jedisPoolConfig == null) {
                     jedisPoolConfig = new JedisPoolConfig();
-                    Set<String> keys = configuration.getKeys();
+                    Set<Object> keys = configuration.getKeys();
                     Set<String> fields = FieldUtils.getFieldNames(JedisPoolConfig.class);
-                    for (String key : keys) {
+                    for (Object key : keys) {
                         for (String field : fields) {
-                            String keyField = key.replaceAll("-", "").replaceAll("_", "");
+                            String keyField = key.toString().replaceAll("-", "").replaceAll("_", "");
                             if (keyField.equalsIgnoreCase(field)) {
                                 Object value = configuration.get(key);
-                                FieldUtils.setProperty(jedisPoolConfig, field, value);
+                                MethodUtils.setProperty(jedisPoolConfig, field, value);
                             }
                         }
                     }
@@ -85,7 +86,7 @@ public class RedisUtils {
      */
     public static Jedis getJedis(RedisConfiguration... configurations) {
         if (configurations.length > 1)
-            throw new RedisConfigurationException("配置对象过多异常，配置对象最多传入一个，可不传。");
+            throw new RedisConfigurationException("配置对象过多异常，配置对象最多传入一个，已初始化后可不传。");
         if (configurations.length > 0 && configurations[0] != null)
             RedisUtils.init(configurations[0]);
         else

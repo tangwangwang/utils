@@ -1,8 +1,10 @@
 package com.t2w.utils.common;
 
-import com.t2w.utils.common.domain.FieldScope;
 import com.t2w.utils.common.domain.MethodScope;
+import com.t2w.utils.exception.MethodNotFoundException;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
@@ -152,6 +154,81 @@ public class MethodUtils {
             clazz = clazz.getSuperclass(); // 得到父类,然后赋给自己
         } while (methodScopes.contains(MethodScope.FATHER) && clazz != null);
         return methods;
+    }
+
+    /**
+     * @param name  需要获取属性值的属性名
+     * @param clazz 需要获取属性值的 Class 对象
+     * @return S 属性的值
+     * @date 2019-08-01 10:27
+     * @see describing 通过属性的get方法获取属性的值
+     */
+    public static <T, S> S getProperty(String name, Class<T> clazz) {
+        Field field = FieldUtils.getField(name, clazz);
+        return getProperty(field, clazz);
+    }
+
+    /**
+     * @param field 需要获取属性值的 Field 对象
+     * @param clazz 需要获取属性值的 Class 对象
+     * @return S 属性的值
+     * @date 2019-08-19 12:47
+     * @see describing 通过属性的get方法获取属性的值
+     */
+    public static <T, S> S getProperty(Field field, Class<T> clazz) {
+        String prefix = "get";
+        Method[] methods = clazz.getMethods();
+        Class<S> type = (Class<S>) field.getType();
+        if (type == boolean.class)
+            prefix = "is";
+        try {
+            for (Method method : methods) {
+                if ((prefix + StringUtils.acronymUppercase(field.getName())).equals(method.getName())) {
+                    return type.cast(method.invoke(clazz.newInstance()));
+                }
+            }
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException | IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * @param t     需要赋值的对象
+     * @param name  需要设置值的属性名
+     * @param value 需要设置属性的值
+     * @date 2019-08-01 10:29
+     * @see describing 通过属性的set方法设置属性的值
+     */
+    public static <T> void setProperty(T t, String name, Object value) {
+        Field field = FieldUtils.getField(name, t.getClass());
+        setProperty(t, field, value);
+    }
+
+    /**
+     * @param t     需要赋值的对象
+     * @param field 需要赋值的属性的 Field 对象
+     * @param value 需要设置属性的值
+     * @see describing 通过属性的set方法设置属性的值
+     * @date 2019-08-19 14:09
+     */
+    public static <T> void setProperty(T t, Field field, Object value) {
+        String prefix = "set";
+        Class type = field.getType();
+        String methodName = prefix + StringUtils.acronymUppercase(field.getName());
+        try {
+            Set<Method> methods = MethodUtils.getMethods(t.getClass(), MethodScope.ALL_METHOD_SCOPE);
+            for (Method method : methods) {
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (method.getName().equals(methodName) && parameterTypes.length == 1 && parameterTypes[0].getName().equals(type.getName())) {
+                    method.invoke(t, ObjectUtils.cast(value, type));
+                    return;
+                }
+            }
+            throw new MethodNotFoundException(t.getClass() + "未找到" + methodName + "方法异常");
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
 }
