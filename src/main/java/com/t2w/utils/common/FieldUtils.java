@@ -1,15 +1,11 @@
 package com.t2w.utils.common;
 
 import com.t2w.utils.common.domain.FieldScope;
-import com.t2w.utils.common.domain.MethodScope;
 import com.t2w.utils.exception.FieldNotFoundException;
-import com.t2w.utils.exception.MethodNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +17,7 @@ import java.util.Set;
  * @name com.t2w.utils.common.FieldUtils.java
  * @see describing 类字段工具类
  */
+@Slf4j
 public class FieldUtils {
 
     /**
@@ -177,6 +174,30 @@ public class FieldUtils {
                 return field;
         }
         throw new FieldNotFoundException(clazz.getName() + " 未找到属性 " + name);
+    }
+
+    /**
+     * @param field  设置的属性 Field
+     * @param object 需要设置值的对象
+     * @param value  需要设置的值
+     * @date 2019-09-04 16:53
+     * @see describing 通过暴力反射进行设置对象的属性值
+     */
+    public static void set(Field field, Object object, Object value) throws IllegalAccessException {
+        field.setAccessible(true);
+        field.set(object, value);
+    }
+
+    /**
+     * @param field  获取的属性 Field
+     * @param object 需要获取值的对象
+     * @return java.lang.Object 对象属性的值
+     * @date 2019-09-04 16:49
+     * @see describing 通过暴力反射进行获取对象的属性值
+     */
+    public static Object get(Field field, Object object) throws IllegalAccessException {
+        field.setAccessible(true);
+        return field.get(object);
     }
 
 }

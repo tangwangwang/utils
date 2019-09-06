@@ -2,6 +2,7 @@ package com.t2w.utils.common;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.net.URLEncoder;
 
 /**

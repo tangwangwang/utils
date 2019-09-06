@@ -38,14 +38,13 @@ public class RedisClusterConfiguration {
      * @param host Redis 集群节点主机地址
      * @param port Redis 集群节点端口号
      * @return com.t2w.utils.redis.domain.RedisClusterConfiguration Redis 集群配置对象
-     * @see describing 向 RedisCluster 配置类中加入集群节点
      * @date 2019-07-30 16:42
+     * @see describing 向 RedisCluster 配置类中加入集群节点
      */
     public RedisClusterConfiguration addNode(String host, int port) {
         if (nodes == null) {
             synchronized (RedisClusterConfiguration.class) {
-                if (nodes == null)
-                    nodes = new HashSet<HostAndPort>();
+                if (nodes == null) { nodes = new HashSet<HostAndPort>(); }
             }
         }
         nodes.add(new HostAndPort(host, port));
@@ -77,10 +76,11 @@ public class RedisClusterConfiguration {
      * @see describing 获取 properties 中所有的 key
      */
     public Set<Object> getKeys() {
-        if (properties == null)
+        if (properties == null) {
             return new HashSet<Object>();
-        else
+        } else {
             return properties.keySet();
+        }
     }
 
     /**
@@ -90,8 +90,7 @@ public class RedisClusterConfiguration {
      * @see describing 获取 properties 中 key 对应的 value 值，key 不存在返回空
      */
     public Object get(Object key) {
-        if (properties != null)
-            return this.properties.get(key);
+        if (properties != null) { return this.properties.get(key); }
         return null;
     }
 

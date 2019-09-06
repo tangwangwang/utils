@@ -8,12 +8,12 @@ import lombok.experimental.Accessors;
  * @version V1.0.0
  * @email tang.wangwang@qq.com
  * @date 2019-07-29 17:17
- * @name com.t2w.utils.sms.configuration.SmsTencentConfiguration.java
+ * @name com.t2w.utils.sms.configuration.SmsTencent.java
  * @see 腾讯云短信配置信息类（配置使用短信业务的基础参数信息）
  */
 @Data
 @Accessors(chain = true)
-public class SmsTencentConfiguration {
+public class TencentSms {
 
     /** 国家（或地区）码 */
     private String nationCode = "86";

@@ -17,10 +17,10 @@ import java.security.SecureRandom;
  * @version V1.0.0
  * @email tang.wangwang@qq.com
  * @date 2019-08-08 10:07
- * @name com.t2w.utils.common.EncryptionUtils.java
+ * @name com.t2w.utils.common.SecurityUtils.java
  * @see describing 加密工具类
  */
-public class EncryptionUtils {
+public class SecurityUtils {
 
     /** 编码格式；默认使用uft-8 */
     private static final String CHARSET = "UTF-8";
@@ -62,8 +62,8 @@ public class EncryptionUtils {
      * @date 2019-08-08 13:46
      * @see describing 使用 Java 自带的 KeyGenerator 中的 Hmac 类型算法进行密钥加密（Hmac 算法，不可逆，有密钥）
      */
-    public static String keyGeneratorHmac(String plaintext, EncryptionAlgorithm.Hmac hmac, String key) {
-        return keyGeneratorHmac(plaintext, hmac.getName(), key);
+    public static String keyGenerator(String plaintext, EncryptionAlgorithm.Hmac hmac, String key) {
+        return keyGenerator(plaintext, hmac.getName(), key);
     }
 
     /**
@@ -74,7 +74,7 @@ public class EncryptionUtils {
      * @date 2019-08-08 13:46
      * @see describing 使用 Java 自带的 KeyGenerator 中的 Hmac(散列消息鉴别码) 类型算法进行密钥加密（不可逆，需要密钥）
      */
-    private static String keyGeneratorHmac(String plaintext, String algorithm, String key) {
+    private static String keyGenerator(String plaintext, String algorithm, String key) {
         try {
             SecretKey sk = null;
             if (key == null) {
@@ -102,8 +102,8 @@ public class EncryptionUtils {
      * @date 2019-08-08 20:52
      * @see describing 使用 Java 自带的 KeyGenerator 中的对称密钥加密算法进行密钥加密/解密（默认密钥长度加密）
      */
-    public static String keyGeneratorSecretKeyEncryption(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, boolean encode) {
-        return keyGeneratorSecretKeyEncryption(plaintext, secretKeyEncryption.getName(), null, 0, encode);
+    public static String keyGenerator(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, boolean encode) {
+        return keyGenerator(plaintext, secretKeyEncryption.getName(), null, 0, encode);
     }
 
     /**
@@ -115,8 +115,8 @@ public class EncryptionUtils {
      * @date 2019-08-08 20:56
      * @see describing 使用 Java 自带的 KeyGenerator 中的对称密钥加密算法进行密钥加密/解密（密钥加密）
      */
-    public static String keyGeneratorSecretKeyEncryption(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, String key, boolean encode) {
-        return keyGeneratorSecretKeyEncryption(plaintext, secretKeyEncryption.getName(), key, 0, encode);
+    public static String keyGenerator(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, String key, boolean encode) {
+        return keyGenerator(plaintext, secretKeyEncryption.getName(), key, 0, encode);
     }
 
     /**
@@ -127,7 +127,7 @@ public class EncryptionUtils {
      * @date 2019-08-08 20:58
      * @see describing 使用 Java 自带的 KeyGenerator 中的对称密钥加密算法进行密钥加密/解密（密钥长度加密，使用系统随机数生成密钥，不可逆）
      */
-    public static String keyGeneratorSecretKeyEncryption(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, int size) {
+    public static String keyGenerator(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, int size) {
         switch (secretKeyEncryption) {
             case AES:
                 if (size != 128 && size != 192 && size != 256)
@@ -147,7 +147,7 @@ public class EncryptionUtils {
                 if (size < 32 || size > 448 || size % 8 != 0)
                     throw new EncryptionKeySizeException("size 必须是 8 的倍数，并且只能在 32 到 448 之间（包括 32 和 448 ）");
         }
-        return keyGeneratorSecretKeyEncryption(plaintext, secretKeyEncryption.getName(), null, size, true);
+        return keyGenerator(plaintext, secretKeyEncryption.getName(), null, size, true);
     }
 
     /**
@@ -160,8 +160,8 @@ public class EncryptionUtils {
      * @date 2019-08-08 20:59
      * @see describing 使用 Java 自带的 KeyGenerator 中的对称密钥加密算法进行密钥加密/解密（密钥和密钥长度加密）
      */
-    public static String keyGeneratorSecretKeyEncryption(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, String key, int size, boolean encode) {
-        return keyGeneratorSecretKeyEncryption(plaintext, secretKeyEncryption.getName(), key, size, encode);
+    public static String keyGenerator(String plaintext, EncryptionAlgorithm.SecretKeyEncryption secretKeyEncryption, String key, int size, boolean encode) {
+        return keyGenerator(plaintext, secretKeyEncryption.getName(), key, size, encode);
     }
 
     /**
@@ -175,7 +175,7 @@ public class EncryptionUtils {
      * @see describing 使用 Java 自带的 KeyGenerator 中的对称密钥加密算法进行密钥加密/解密（可逆，可选是否需要密钥） <br/>
      * 注意这里转化为字符串的时候是将2进制转为16进制格式的字符串，不是直接转，因为会出错
      */
-    private static String keyGeneratorSecretKeyEncryption(String text, String algorithm, String key, int size, boolean encode) {
+    private static String keyGenerator(String text, String algorithm, String key, int size, boolean encode) {
         String result = null;
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm);
@@ -244,7 +244,7 @@ public class EncryptionUtils {
      * @see describing 使用 MD5 加密算法进行加密（不可逆，需要密钥）
      */
     public static String MD5(String plaintext, String key) {
-        return keyGeneratorHmac(plaintext, EncryptionAlgorithm.Hmac.HMAC_MD5, key);
+        return keyGenerator(plaintext, EncryptionAlgorithm.Hmac.HMAC_MD5, key);
     }
 
     /**
@@ -270,7 +270,7 @@ public class EncryptionUtils {
      * @see describing 使用 SHA1 加密算法进行加密（不可逆，需要密钥）
      */
     public static String SHA1(String plaintext, String key) {
-        return keyGeneratorHmac(plaintext, EncryptionAlgorithm.Hmac.HMAC_SHA1, key);
+        return keyGenerator(plaintext, EncryptionAlgorithm.Hmac.HMAC_SHA1, key);
     }
 
     /**
@@ -294,7 +294,7 @@ public class EncryptionUtils {
         // size 为 128, 192, 256
         if (size != 128 && size != 192 && size != 256)
             throw new EncryptionKeySizeException("size 必须是：128, 192, 256");
-        return keyGeneratorSecretKeyEncryption(plaintext, EncryptionAlgorithm.SecretKeyEncryption.AES, null, size, true);
+        return keyGenerator(plaintext, EncryptionAlgorithm.SecretKeyEncryption.AES, null, size, true);
     }
 
     /**
@@ -304,7 +304,7 @@ public class EncryptionUtils {
      * @see describing 使用 DES 加密算法进行加密（使用系统随机数初始化的密钥，不可逆）
      */
     public static String DES(String plaintext) {
-        return keyGeneratorSecretKeyEncryption(plaintext, EncryptionAlgorithm.SecretKeyEncryption.DES, null, 56, true);
+        return keyGenerator(plaintext, EncryptionAlgorithm.SecretKeyEncryption.DES, null, 56, true);
     }
 
     /**
@@ -315,7 +315,7 @@ public class EncryptionUtils {
      * @see describing  使用 AES 加密算法经行加密（可逆，需要密钥）
      */
     public static String encodeAES(String plaintext, String key) {
-        return keyGeneratorSecretKeyEncryption(plaintext, EncryptionAlgorithm.SecretKeyEncryption.AES, key, 0, true);
+        return keyGenerator(plaintext, EncryptionAlgorithm.SecretKeyEncryption.AES, key, 0, true);
     }
 
     /**
@@ -326,7 +326,7 @@ public class EncryptionUtils {
      * @see describing 对使用 AES 加密算法的密文进行解密（可逆）
      */
     public static String decodeAES(String ciphertext, String key) {
-        return keyGeneratorSecretKeyEncryption(ciphertext, EncryptionAlgorithm.SecretKeyEncryption.AES, key, 0, false);
+        return keyGenerator(ciphertext, EncryptionAlgorithm.SecretKeyEncryption.AES, key, 0, false);
     }
 
     /**
@@ -337,7 +337,7 @@ public class EncryptionUtils {
      * @see describing  使用 DES 加密算法进行加密（可逆，需要密钥）
      */
     public static String encodeDES(String plaintext, String key) {
-        return keyGeneratorSecretKeyEncryption(plaintext, EncryptionAlgorithm.SecretKeyEncryption.DES, key, 0, true);
+        return keyGenerator(plaintext, EncryptionAlgorithm.SecretKeyEncryption.DES, key, 0, true);
     }
 
     /**
@@ -348,7 +348,7 @@ public class EncryptionUtils {
      * @see describing   对使用 DES 加密算法的密文进行解密（可逆）
      */
     public static String decodeDES(String ciphertext, String key) {
-        return keyGeneratorSecretKeyEncryption(ciphertext, EncryptionAlgorithm.SecretKeyEncryption.DES, key, 0, false);
+        return keyGenerator(ciphertext, EncryptionAlgorithm.SecretKeyEncryption.DES, key, 0, false);
     }
 
     /**

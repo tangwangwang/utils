@@ -69,10 +69,11 @@ public class RedisSentinelConfiguration {
      * @see describing 获取 properties 中所有的 key
      */
     public Set<Object> getKeys() {
-        if (properties == null)
+        if (properties == null) {
             return new HashSet<Object>();
-        else
+        } else {
             return properties.keySet();
+        }
     }
 
     /**
@@ -82,21 +83,23 @@ public class RedisSentinelConfiguration {
      * @see describing 获取 properties 中 key 对应的 value 值，key 不存在返回空
      */
     public Object get(Object key) {
-        if (properties != null)
+        if (properties != null) {
             return this.properties.get(key);
+        }
         return null;
     }
 
     /**
      * @return java.util.Set<redis.clients.jedis.HostAndPort> 所有的节点信息集合
-     * @see describing 获取所有的节点信息
      * @date 2019-08-16 20:28
+     * @see describing 获取所有的节点信息
      */
     public Set<HostAndPort> getNodes() {
         if (nodes == null) {
             synchronized (RedisClusterConfiguration.class) {
-                if (nodes == null)
+                if (nodes == null) {
                     nodes = new LinkedHashSet<HostAndPort>(0);
+                }
             }
         }
         return nodes;

@@ -6,7 +6,7 @@
 
     <groupId>com.t2w</groupId>
     <artifactId>utils</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>utils</name>
@@ -17,7 +17,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
+        <slf4j.version>1.7.28</slf4j.version>
+        <plugin.javadoc>3.1.0</plugin.javadoc>
+        <plugin.source>3.1.0</plugin.source>
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -29,8 +33,14 @@
         <!-- 日志依赖 -->
         <dependency>
             <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
-            <version>1.7.26</version>
+            <version>${slf4j.version}</version>
             <optional>true</optional>
         </dependency>
         <!-- Redis 依赖 -->
@@ -39,6 +49,12 @@
             <artifactId>jedis</artifactId>
             <version>3.0.1</version>
             <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Ymal 解析依赖 -->
         <dependency>
@@ -105,6 +121,54 @@
     </dependencies>
 
     <build>
+        <finalName>utils</finalName>
+        <plugins>
+            <!--配置生成Javadoc包-->
+            <!--<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${plugin.javadoc}</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    &lt;!&ndash; 设置自定义标签 &ndash;&gt;
+                    <tags>
+                        <tag>
+                            <name>email</name>
+                        </tag>
+                        <tag>
+                            <name>date</name>
+                        </tag>
+                        <tag>
+                            <name>name</name>
+                        </tag>
+                    </tags>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
+            <!--配置生成源码包-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${plugin.source}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
@@ -149,4 +213,17 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Releases</name>
+            <url>http://maven.tangwangwang.com/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshot</name>
+            <url>http://maven.tangwangwang.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

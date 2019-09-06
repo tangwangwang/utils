@@ -7,8 +7,8 @@ import com.github.qcloudsms.SmsSingleSenderResult;
 import com.github.qcloudsms.httpclient.HTTPException;
 import com.t2w.utils.common.StringUtils;
 import com.t2w.utils.exception.SmsException;
+import com.t2w.utils.sms.configuration.TencentSms;
 import com.t2w.utils.sms.domain.SmsResult;
-import com.t2w.utils.sms.configuration.SmsTencentConfiguration;
 import com.t2w.utils.sms.domain.SmsType;
 import org.json.JSONException;
 
@@ -20,13 +20,13 @@ import java.io.IOException;
  * @email tang.wangwang@qq.com
  * @date 2019-07-29 14:35
  * @name com.t2w.utils.sms.TencentUtils.java
- * @see 腾讯云短信服务工具包，需要在程序中配置 SmsTencentConfiguration，可直接在容器中加入一个该类型的 bean 进行使用 <br/>
+ * @see 腾讯云短信服务工具包，需要在程序中配置 TencentSms，可直接在容器中加入一个该类型的 bean 进行使用 <br/>
  * 需要导入依赖【com.github.qcloudsms.qcloudsms】
  */
 public class TencentUtils {
 
     /**
-     * @param configuration 腾讯云配置类，SmsTencentConfiguration 中的 appid, appkey, phone 字段必须填写
+     * @param configuration 腾讯云配置类，TencentSms 中的 appid, appkey, phone 字段必须填写
      *                      appid       短信应用 SDK AppID
      *                      appkey      短信应用 SDK AppKey
      *                      phone       需要发送短信的号码
@@ -35,7 +35,7 @@ public class TencentUtils {
      * @date 2019-07-29 16:49
      * @see describing      单个号码发送短信，按短信内容直接发送，短信内容需要符合第三方提供的模板内容
      */
-    public static SmsResult sendMessage(SmsTencentConfiguration configuration, String msg) {
+    public static SmsResult sendMessage(TencentSms configuration, String msg) {
         SmsResult smsResult = new SmsResult();
         smsResult.setSmsType(SmsType.TENCENT).setTotal(1);
         try {
@@ -62,7 +62,7 @@ public class TencentUtils {
     }
 
     /**
-     * @param configuration 腾讯云配置类，SmsTencentConfiguration 中的 appid, appkey, phone, templateId, params, smsSign 字段必须填写
+     * @param configuration 腾讯云配置类，TencentSms 中的 appid, appkey, phone, templateId, params, smsSign 字段必须填写
      *                      appid       短信应用 SDK AppID
      *                      appkey      短信应用 SDK AppKey
      *                      phone       需要发送短信的号码
@@ -73,7 +73,7 @@ public class TencentUtils {
      * @date 2019-07-29 16:51
      * @see describing      单个号码发送短信，按短信的模板发送，模板id和签名由腾讯云提供
      */
-    public static SmsResult sendMessage(SmsTencentConfiguration configuration) {
+    public static SmsResult sendMessage(TencentSms configuration) {
         SmsResult smsResult = new SmsResult();
         smsResult.setSmsType(SmsType.TENCENT).setTotal(1);
         try {
@@ -103,7 +103,7 @@ public class TencentUtils {
     }
 
     /**
-     * @param configuration 腾讯云配置类，SmsTencentConfiguration 中的 appid, appkey, phone 字段必须填写
+     * @param configuration 腾讯云配置类，TencentSms 中的 appid, appkey, phone 字段必须填写
      *                      appid       短信应用 SDK AppID
      *                      appkey      短信应用 SDK AppKey
      *                      phones       需要发送短信的号码数组
@@ -112,7 +112,7 @@ public class TencentUtils {
      * @date 2019-07-29 16:54
      * @see describing      多个号码发送短信，按短信内容直接发送，短信内容需要符合第三方提供的模板内容
      */
-    public static SmsResult sendMessages(SmsTencentConfiguration configuration, String msg) {
+    public static SmsResult sendMessages(TencentSms configuration, String msg) {
         SmsResult smsResult = new SmsResult();
         try {
             String[] phones = configuration.getPhones();
@@ -144,7 +144,7 @@ public class TencentUtils {
     }
 
     /**
-     * @param configuration 腾讯云配置类，SmsTencentConfiguration 中的 appid, appkey, phone, templateId, params, smsSign 字段必须填写
+     * @param configuration 腾讯云配置类，TencentSms 中的 appid, appkey, phone, templateId, params, smsSign 字段必须填写
      *                      appid       短信应用 SDK AppID
      *                      appkey      短信应用 SDK AppKey
      *                      phones       需要发送短信的号码数组
@@ -155,7 +155,7 @@ public class TencentUtils {
      * @date 2019-07-29 16:54
      * @see describing      多个号码发送短信，按短信的模板发送，模板id和签名由腾讯云提供
      */
-    public static SmsResult sendMessages(SmsTencentConfiguration configuration) {
+    public static SmsResult sendMessages(TencentSms configuration) {
         SmsResult smsResult = new SmsResult();
         try {
             String[] phones = configuration.getPhones();

@@ -1,8 +1,9 @@
 package com.t2w.utils.common;
 
+import java.text.CharacterIterator;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
+import java.text.StringCharacterIterator;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +17,13 @@ import java.util.regex.Pattern;
  */
 public class StringUtils {
 
+    /** 下划线字符串的正则表达式 */
+    private static final Pattern UNDERLINE_PATTERN = Pattern.compile("([A-Za-z\\d]+)(_)?");
+    /** 驼峰命名法的正则表达式 */
+    private static final Pattern CAMEL_PATTERN = Pattern.compile("[A-Z]([a-z\\d]+)?");
+    /** Integer整型数字的正则表达式 */
+    private static final Pattern INTEGER_PATTERN = Pattern.compile("^[-+]?[\\d]*$");
+
     /**
      * @param src 需要转化的源字符串
      * @return java.lang.String 转化完成后的字符串
@@ -23,8 +31,7 @@ public class StringUtils {
      * @see 字符串首字母大写（name ---> Name）
      */
     public static String acronymUppercase(String src) {
-        if (StringUtils.isEmpty(src))
-            return "";
+        if (StringUtils.isEmpty(src)) { return ""; }
         byte[] items = src.getBytes();
         if (items[0] >= 'a' && items[0] <= 'z') {
             items[0] = (byte) ((char) items[0] - 'a' + 'A');
@@ -39,8 +46,7 @@ public class StringUtils {
      * @see describing 字符串首字母小写（Name ---> name）
      */
     public static String acronymLowercase(String src) {
-        if (StringUtils.isEmpty(src))
-            return "";
+        if (StringUtils.isEmpty(src)) { return ""; }
         byte[] items = src.getBytes();
         if (items[0] >= 'A' && items[0] <= 'Z') {
             items[0] = (byte) ((char) items[0] - 'A' + 'a');
@@ -59,15 +65,14 @@ public class StringUtils {
             return "";
         }
         src = String.valueOf(src.charAt(0)).toUpperCase().concat(src.substring(1));
-        StringBuffer sb = new StringBuffer();
-        Pattern pattern = Pattern.compile("[A-Z]([a-z\\d]+)?");
-        Matcher matcher = pattern.matcher(src);
+        StringBuilder builder = new StringBuilder();
+        Matcher matcher = CAMEL_PATTERN.matcher(src);
         while (matcher.find()) {
             String word = matcher.group();
-            sb.append(word.toUpperCase());
-            sb.append(matcher.end() == src.length() ? "" : "_");
+            builder.append(word.toUpperCase());
+            builder.append(matcher.end() == src.length() ? "" : "_");
         }
-        return sb.toString();
+        return builder.toString();
     }
 
     /**
@@ -81,26 +86,27 @@ public class StringUtils {
         if (isEmpty(src)) {
             return "";
         }
-        StringBuffer sb = new StringBuffer();
-        Pattern pattern = Pattern.compile("([A-Za-z\\d]+)(_)?");
-        Matcher matcher = pattern.matcher(src);
+        StringBuilder builder = new StringBuilder();
+        Matcher matcher = UNDERLINE_PATTERN.matcher(src);
         //匹配正则表达式
         while (matcher.find()) {
             String word = matcher.group();
             //当 greatCamel 是 空 或 是 false 时，则为小驼峰
             if ((greatCamel.length == 0 || !greatCamel[0]) && matcher.start() == 0) {
-                sb.append(Character.toLowerCase(word.charAt(0)));
-            } else {
-                sb.append(Character.toUpperCase(word.charAt(0)));
+                builder.append(Character.toLowerCase(word.charAt(0)));
+            }
+            else {
+                builder.append(Character.toUpperCase(word.charAt(0)));
             }
             int index = word.lastIndexOf('_');
             if (index > 0) {
-                sb.append(word.substring(1, index).toLowerCase());
-            } else {
-                sb.append(word.substring(1).toLowerCase());
+                builder.append(word.substring(1, index).toLowerCase());
+            }
+            else {
+                builder.append(word.substring(1).toLowerCase());
             }
         }
-        return sb.toString();
+        return builder.toString();
     }
 
     /**
@@ -125,29 +131,72 @@ public class StringUtils {
 
     /**
      * @param src 源字符串
+     * @return boolean 是否为 null 或 "" 或 " "
+     * @date 2019-09-05 20:57
+     * @see describing 为 null 或 "" 或 " " 的字符串返回 true , 否则返回 false
+     */
+    public static boolean isBlank(CharSequence src) {
+        int strLen;
+        if (src != null && (strLen = src.length()) != 0) {
+            for (int i = 0; i < strLen; ++i) {
+                if (!Character.isWhitespace(src.charAt(i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else {
+            return true;
+        }
+    }
+
+    /**
+     * @param src 源字符串
+     * @return boolean 是否不为 null 或 "" 或 " "
+     * @date 2019-09-05 20:59
+     * @see describing 为 null 或 "" 或 " " 的(空白)字符串返回 false , 否则返回 true
+     */
+    public static boolean isNotBlank(CharSequence src) {
+        return !isBlank(src);
+    }
+
+    /**
+     * @param src 需要去除空白符的源字符串
+     * @return java.lang.String 无空白符的字符串
+     * @date 2019-07-29 14:19
+     * @see 将字符串的空白符全部去除
+     */
+    public static String removeBlank(String src) {
+        StringBuilder builder = new StringBuilder();
+        char[] chars = src.toCharArray();
+        for (char ch : chars) {
+            if (Character.isWhitespace(ch)) { continue; }
+            builder.append(ch);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * @param src 源字符串
      * @return java.lang.String 字符串的后缀
      * @date 2019-07-29 10:18
-     * @see 返回字符串的后缀名，如果没有则返回 ""
+     * @see describing 返回字符串的后缀名，如果没有则返回 ""
      */
     public static String getSuffix(String src) {
-        if (isEmpty(src))
-            return "";
+        if (isEmpty(src)) { return ""; }
         int index = src.lastIndexOf('.');
-        if (index == -1)
-            return "";
-        else
-            return src.substring(++index);
+        if (index == -1) { return ""; }
+        else { return src.substring(++index); }
     }
 
     /**
      * @param src 传入字符串
      * @return boolean 是整数返回true,否则返回false
      * @date 2019-07-29 10:19
-     * @see 判断字符是否为数字
+     * @see describing 判断字符是否为数字
      */
     public static boolean isInteger(String src) {
-        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-        return pattern.matcher(src).matches();
+        return INTEGER_PATTERN.matcher(src).matches();
     }
 
     /**
@@ -158,14 +207,14 @@ public class StringUtils {
      * @see describing 将字符串数组按指定分隔符拼接为字符串
      */
     public static String toString(String[] src, String separator) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         for (int index = 0; index < src.length; index++) {
-            buffer.append(src[index]);
+            builder.append(src[index]);
             if (isNotEmpty(separator) && index != src.length - 1) {
-                buffer.append(separator);
+                builder.append(separator);
             }
         }
-        return buffer.toString();
+        return builder.toString();
     }
 
     /**
@@ -231,10 +280,8 @@ public class StringUtils {
      * @see describing 将16进制转换为二进制（字符串长度必须为 2 的倍数）;
      */
     public static byte[] toBytes(String hexString) {
-        if (hexString.length() < 1)
-            return new byte[0];
-        if (hexString.length() % 2 == 1)
-            return new byte[0];
+        if (hexString.length() < 1) { return new byte[0]; }
+        if (hexString.length() % 2 == 1) { return new byte[0]; }
         byte[] result = new byte[hexString.length() / 2];
         for (int i = 0; i < hexString.length() / 2; i++) {
             int high = Integer.parseInt(hexString.substring(i * 2, i * 2 + 1), 16);
@@ -242,5 +289,64 @@ public class StringUtils {
             result[i] = (byte) (high * 16 + low);
         }
         return result;
+    }
+
+    /**
+     * @param value 需要判断的字符串
+     * @return boolean 是数字返回 true, 不是数字返回 false
+     * @date 2019-09-06 10:57
+     * @see describing 判断字符串是否为数字(包含小数与负数)
+     */
+    public static boolean isNumber(String value) {
+        if (isBlank(value)) { return false; }
+        String integer = "-?(0|[1-9][0-9]*)";
+        String decimal = "-?(0|[1-9][0-9]*).[0-9]+";
+        return value.matches(integer) || value.matches(decimal);
+    }
+
+    /**
+     * @param value 需要判断的字符串
+     * @return boolean 输出后是字符串标准类型(""包含)返回 true, 否则返回 false
+     * @date 2019-09-06 11:15
+     * @see describing 判断该字符串在输出后是否是一个标准的字符串类型(即是否被""包含)
+     */
+    public static boolean isString(String value) {
+        value = JsonUtils.toString(value);
+        if (isBlank(value) && value.length() < 2) { return false; }
+        // 字符串中可以转移的字符
+        List<Character> fixeds = Arrays.asList('\\', '"', '\'', 'b', 'n', 'r', 't');
+        CharacterIterator it = new StringCharacterIterator(value);
+        char last = it.last();
+        int lastIndex = it.getIndex();
+        char first = it.first();
+        int firstIndex = it.getIndex();
+        if (first == '"' && last == '"') {
+            for (int index = firstIndex + 1; index < lastIndex; index++) {
+                char charIndex = it.setIndex(index);
+                // 如果是 \ 则校验是否后面的字符是需要转移的字符
+                if (charIndex == '\\') {
+                    if (index == lastIndex - 1) { return false; }
+                    char next = it.next();
+                    boolean isFixed = false;
+                    for (char fixed : fixeds) {
+                        if (fixed == next) { isFixed = true; }
+                    }
+                    if (!isFixed) { return false; }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param object 需要判断的对象
+     * @return boolean 该对象时字符串对象实例返回 true, 否则返回 false
+     * @date 2019-09-06 11:17
+     * @see describing
+     */
+    public static boolean isString(Object object) {
+        if (object == null) { return false; }
+        return object instanceof String;
     }
 }
